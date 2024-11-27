@@ -10,7 +10,8 @@
     </div>
 <?php endif; ?>
 <form method="POST" action="/webbanhang/Product/save" onsubmit="return
-validateForm();">
+validateForm();" enctype="multipart/form-data">
+
     <div class="form-group">
         <label for="name">Tên sản phẩm:</label>
         <input type="text" id="name" name="name" class="form-control" required>
@@ -32,6 +33,11 @@ validateForm();">
             <?php endforeach; ?>
         </select>
     </div>
+    <div class="form-group">
+        <label for="image">Hình ảnh:</label>
+        <input type="file" id="image" name="image" class="form-control">
+    </div>
+
     <button type="submit" class="btn btn-primary">Thêm sản phẩm</button>
 </form>
 <a href="/webbanhang/Product/list" class="btn btn-secondary mt-2">Quay lại danh sách

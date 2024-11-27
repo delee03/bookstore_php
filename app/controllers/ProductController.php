@@ -38,12 +38,22 @@ class ProductController
             $description = $_POST['description'] ?? '';
             $price = $_POST['price'] ?? '';
             $category_id = $_POST['category_id'] ?? null;
+
+            $image = null;
+            if (!empty($_FILES['image']['name'])) {
+                $target_dir = "public/images/";
+                $image = $target_dir . basename($_FILES["image"]["name"]);
+                move_uploaded_file($_FILES["image"]["tmp_name"], $image);
+            }
+
             $result = $this->productModel->addProduct(
                 $name,
                 $description,
                 $price,
-                $category_id
+                $category_id,
+                $image
             );
+
             if (is_array($result)) {
                 $errors = $result;
                 $categories = (new CategoryModel($this->db))->getCategories();
@@ -53,6 +63,8 @@ class ProductController
             }
         }
     }
+
+
     public function edit($id)
     {
         $product = $this->productModel->getProductById($id);
@@ -71,13 +83,23 @@ class ProductController
             $description = $_POST['description'];
             $price = $_POST['price'];
             $category_id = $_POST['category_id'];
+
+            $image = null;
+            if (!empty($_FILES['image']['name'])) {
+                $target_dir = "uploads/";
+                $image = $target_dir . basename($_FILES["image"]["name"]);
+                move_uploaded_file($_FILES["image"]["tmp_name"], $image);
+            }
+
             $edit = $this->productModel->updateProduct(
                 $id,
                 $name,
                 $description,
                 $price,
-                $category_id
+                $category_id,
+                $image
             );
+
             if ($edit) {
                 header('Location: /webbanhang/Product');
             } else {
@@ -85,6 +107,7 @@ class ProductController
             }
         }
     }
+
     public function delete($id)
     {
         if ($this->productModel->deleteProduct($id)) {

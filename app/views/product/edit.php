@@ -39,6 +39,17 @@ validateForm();">
             <?php endforeach; ?>
         </select>
     </div>
+    <div class="form-group">
+        <label>Hình ảnh hiện tại:</label>
+        <?php if (!empty($product->image)): ?>
+            <img src="/<?php echo $product->image; ?>" alt="Product Image" width="150">
+        <?php endif; ?>
+    </div>
+    <div class="form-group">
+        <label for="image">Hình ảnh mới:</label>
+        <input type="file" id="image" name="image" class="form-control">
+    </div>
+
     <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
 </form>
 <a href="/webbanhang/Product/list" class="btn btn-secondary mt-2">Quay lại danh sách

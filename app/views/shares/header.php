@@ -19,11 +19,14 @@ navigation">
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="/webbanhang/Product/">Danh sách sản
+                    <a class="nav-link" href="/webbanhang/product/">Danh sách sản
                         phẩm</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/webbanhang/Product/add">Thêm sản
+                    <a class="nav-link" href="/webbanhang/category/list">Danh mục</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/webbanhang/product/add">Thêm sản
                         phẩm</a>
                 </li>
             </ul>

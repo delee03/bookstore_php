@@ -1,5 +1,20 @@
 # CakePHP 3
 
+/tmp
+/logs
+/webroot/files
+/webroot/img
+/webroot/js
+/webroot/css
+/webroot/font
+.env
+.vscode
+.idea
+.DS_Store
+/composer.phar
+/composer.lock
+
+
 /vendor/*
 /config/app.php
 

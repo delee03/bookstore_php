@@ -26,7 +26,8 @@ LEFT JOIN category c ON p.category_id = c.id";
         $result = $stmt->fetch(PDO::FETCH_OBJ);
         return $result;
     }
-    public function addProduct($name, $description, $price, $category_id)
+
+    public function addProduct($name, $description, $price, $category_id, $image)
     {
         $errors = [];
         if (empty($name)) {
@@ -41,41 +42,47 @@ LEFT JOIN category c ON p.category_id = c.id";
         if (count($errors) > 0) {
             return $errors;
         }
-        $query = "INSERT INTO " . $this->table_name . " (name, description, price, 
-category_id) VALUES (:name, :description, :price, :category_id)";
+
+        $query = "INSERT INTO " . $this->table_name . " (name, description, price, category_id, image) 
+                  VALUES (:name, :description, :price, :category_id, :image)";
         $stmt = $this->conn->prepare($query);
-        $name = htmlspecialchars(strip_tags($name));
-        $description = htmlspecialchars(strip_tags($description));
-        $price = htmlspecialchars(strip_tags($price));
-        $category_id = htmlspecialchars(strip_tags($category_id));
         $stmt->bindParam(':name', $name);
         $stmt->bindParam(':description', $description);
         $stmt->bindParam(':price', $price);
         $stmt->bindParam(':category_id', $category_id);
-        if ($stmt->execute()) {
-            return true;
-        }
-        return false;
+        $stmt->bindParam(':image', $image);
+
+        return $stmt->execute();
     }
-    public function updateProduct($id, $name, $description, $price, $category_id)
+
+
+
+
+    public function updateProduct($id, $name, $description, $price, $category_id, $image = null)
     {
-        $query = "UPDATE " . $this->table_name . " SET name=:name, 
-description=:description, price=:price, category_id=:category_id WHERE id=:id";
+        $query = "UPDATE " . $this->table_name . " 
+              SET name=:name, description=:description, price=:price, category_id=:category_id";
+
+        if (!empty($image)) {
+            $query .= ", image=:image";
+        }
+        $query .= " WHERE id=:id";
+
         $stmt = $this->conn->prepare($query);
-        $name = htmlspecialchars(strip_tags($name));
-        $description = htmlspecialchars(strip_tags($description));
-        $price = htmlspecialchars(strip_tags($price));
-        $category_id = htmlspecialchars(strip_tags($category_id));
         $stmt->bindParam(':id', $id);
         $stmt->bindParam(':name', $name);
         $stmt->bindParam(':description', $description);
         $stmt->bindParam(':price', $price);
         $stmt->bindParam(':category_id', $category_id);
-        if ($stmt->execute()) {
-            return true;
+
+        if (!empty($image)) {
+            $stmt->bindParam(':image', $image);
         }
-        return false;
+
+        return $stmt->execute();
     }
+
+
     public function deleteProduct($id)
     {
         $query = "DELETE FROM " . $this->table_name . " WHERE id=:id";

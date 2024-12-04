@@ -1,6 +1,6 @@
 <h1>Giỏ Hàng</h1>
 
-<?php if (!empty($cartItems)): ?>
+<?php if (count($cartItems) > 0): ?>
     <table>
         <thead>
             <tr>
@@ -13,14 +13,11 @@
         <tbody>
             <?php foreach ($cartItems as $item): ?>
                 <tr>
-                    <td>
-                        <img src="/webbanhang/uploads/<?php echo htmlspecialchars($item->image); ?>"
-                            alt="<?php echo htmlspecialchars($item->name); ?>" width="50">
-                        <?php echo htmlspecialchars($item->name); ?>
-                    </td>
+                    <td><img src="/webbanhang/uploads/<?php echo $item->image; ?>" alt="<?php echo $item->name; ?>" width="50">
+                        <?php echo $item->name; ?></td>
                     <td><?php echo $item->quantity; ?></td>
                     <td><?php echo $item->price; ?> VNĐ</td>
-                    <td><a href="/webbanhang/Cart/remove/<?php echo $item->product_id; ?>">Xóa</a></td>
+                    <td><a href="/cart/remove/<?php echo $item->product_id; ?>">Xóa</a></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

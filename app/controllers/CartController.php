@@ -15,8 +15,13 @@ class CartController
     // Hiển thị giỏ hàng
     public function view()
     {
-        // Kiểm tra giỏ hàng
-        $cartItems = $this->cartModel->getCartItems($_SESSION['cart_id']);  // Lấy danh sách sản phẩm trong giỏ hàng
+        if (!isset($_SESSION['session_id'])) {
+            // Nếu chưa, tạo một session_id ngẫu nhiên hoặc lấy từ cookie
+            $_SESSION['session_id'] = session_id();  // Hoặc có thể sử dụng một giá trị ngẫu nhiên khác
+        }
+
+        // Lấy danh sách sản phẩm trong giỏ hàng
+        $cartItems = $this->cartModel->getCartItems($_SESSION['session_id']);
 
         // Bao gồm file view giỏ hàng
         include 'app/views/cart/view.php';

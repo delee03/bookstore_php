@@ -46,7 +46,7 @@ class ProductController
             $this->cartModel->addToCart($session_id, $product_id, $quantity);
 
             // Chuyển hướng về trang giỏ hàng sau khi thêm thành công
-            header('Location: /cart/view'); // Điều hướng đến giỏ hàng
+            header('Location: /webbanhang/cart/view'); // Điều hướng đến giỏ hàng
             exit();
         }
     }
@@ -58,12 +58,16 @@ class ProductController
     // Action hiển thị giỏ hàng
     public function viewCart()
     {
-        // Lấy giỏ hàng từ CartModel
-        $cartItems = $this->cartModel->getCartItems($_SESSION['cart_id']); // Lấy cart_id từ session
+        // Lấy session_id từ session
+        $session_id = session_id();  // Nếu đang dùng session thì lấy ID session hiện tại
 
-        // Hiển thị giỏ hàng
+        // Lấy sản phẩm trong giỏ hàng
+        $cartItems = $this->cartModel->getCartItems($session_id);
+
+        // Bao gồm file view giỏ hàng
         include 'app/views/cart/view.php';
     }
+
 
 
     public function index()

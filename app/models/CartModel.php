@@ -1,57 +1,52 @@
 <?php
+require_once('app/config/database.php');
+
 class CartModel
 {
-    private $conn;
-    private $table_name = "cart";
+    private $conn; // Kết nối cơ sở dữ liệu
+    private $table_name = "cart"; // Tên bảng chứa giỏ hàng
 
+    // Constructor nhận vào đối tượng kết nối cơ sở dữ liệu
     public function __construct($db)
     {
-        $this->conn = $db;
+        $this->conn = $db; // Khởi tạo kết nối cơ sở dữ liệu
+    }
+
+    // Lấy danh sách sản phẩm trong giỏ hàng
+    public function getCartItems($cart_id)
+    {
+        $query = "SELECT ci.product_id, p.name, p.image, ci.quantity, p.price
+                  FROM cart ci
+                  JOIN product p ON ci.product_id = p.id
+                  WHERE ci.id = :cart_id";
+
+        $stmt = $this->conn->prepare($query); // Sử dụng $this->conn thay vì $this->db
+        $stmt->bindParam(':cart_id', $cart_id);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
 
     // Thêm sản phẩm vào giỏ hàng
-    public function addProductToCart($sessionId, $productId, $quantity)
+    public function addToCart($session_id, $product_id, $quantity)
     {
-        $query = "INSERT INTO " . $this->table_name . " (session_id, product_id, quantity) VALUES (:session_id, :product_id, :quantity)";
+        // Kiểm tra xem giỏ hàng đã có sản phẩm chưa, nếu có thì chỉ cần cập nhật
+        $query = "INSERT INTO cart (session_id, product_id, quantity) VALUES (:session_id, :product_id, :quantity)";
+
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':session_id', $sessionId);
-        $stmt->bindParam(':product_id', $productId);
+
+        // Bind các tham số vào query
+        $stmt->bindParam(':session_id', $session_id);
+        $stmt->bindParam(':product_id', $product_id);
         $stmt->bindParam(':quantity', $quantity);
-        $stmt->execute();
+
+        // Thực thi câu lệnh và kiểm tra nếu thành công
+        if ($stmt->execute()) {
+            return true;
+        }
+
+        return false;
     }
 
-    // Cập nhật số lượng sản phẩm trong giỏ hàng
-    public function updateProductInCart($sessionId, $productId, $quantity)
-    {
-        $query = "UPDATE " . $this->table_name . " SET quantity = :quantity WHERE session_id = :session_id AND product_id = :product_id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':session_id', $sessionId);
-        $stmt->bindParam(':product_id', $productId);
-        $stmt->bindParam(':quantity', $quantity);
-        $stmt->execute();
-    }
 
-    // Lấy sản phẩm trong giỏ hàng
-    public function getProductInCart($sessionId, $productId)
-    {
-        $query = "SELECT * FROM " . $this->table_name . " WHERE session_id = :session_id AND product_id = :product_id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':session_id', $sessionId);
-        $stmt->bindParam(':product_id', $productId);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_OBJ);  // Trả về sản phẩm nếu có
-    }
-
-    // Lấy tất cả sản phẩm trong giỏ hàng
-    public function getCartItems($sessionId)
-    {
-        $query = "SELECT p.id, p.name, p.image, p.price, c.quantity
-                  FROM " . $this->table_name . " c
-                  LEFT JOIN product p ON c.product_id = p.id
-                  WHERE c.session_id = :session_id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':session_id', $sessionId);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_OBJ);
-    }
 }

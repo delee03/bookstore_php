@@ -14,29 +14,57 @@ class ProductController
     {
         $this->db = (new Database())->getConnection();
         $this->productModel = new ProductModel($this->db);
+
         $this->cartModel = new CartModel($this->db);
     }
 
     // Thêm action cho giỏ hàng
-    public function cart()
-    {
-        // Lấy giỏ hàng từ session hoặc cookie
-        $cartItems = $this->cartModel->getCartItems();  // Giả sử CartModel có hàm getCartItems
-        include 'app/views/cart/view.php'; // Hiển thị giỏ hàng
-    }
+    // public function cart()
+    // {
+    //     // Lấy giỏ hàng từ session hoặc cookie
+    //     $cartItems = $this->cartModel->getCartItems();  // Giả sử CartModel có hàm getCartItems
+    //     include 'app/views/cart/view.php'; // Hiển thị giỏ hàng
+    // }
 
-    // Thêm action để thêm sản phẩm vào giỏ hàng
+
+    // Action thêm sản phẩm vào giỏ hàng// Action thêm sản phẩm vào giỏ hàng
     public function addToCart()
     {
-        $productId = $_POST['product_id'] ?? null;
+        $product_id = $_POST['product_id'] ?? null;
         $quantity = $_POST['quantity'] ?? 1;
 
-        if ($productId) {
-            $this->cartModel->addToCart($productId, $quantity);  // Giả sử CartModel có hàm addToCart
+        // Kiểm tra nếu session chưa bắt đầu, hãy khởi tạo session
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
         }
 
-        header('Location: /webbanhang/cart'); // Điều hướng về trang giỏ hàng
+        // Lấy session_id từ session
+        $session_id = session_id();
+
+        if ($product_id) {
+            // Thêm sản phẩm vào giỏ hàng và truyền thêm session_id
+            $this->cartModel->addToCart($session_id, $product_id, $quantity);
+
+            // Chuyển hướng về trang giỏ hàng sau khi thêm thành công
+            header('Location: /cart/view'); // Điều hướng đến giỏ hàng
+            exit();
+        }
     }
+
+
+
+
+
+    // Action hiển thị giỏ hàng
+    public function viewCart()
+    {
+        // Lấy giỏ hàng từ CartModel
+        $cartItems = $this->cartModel->getCartItems($_SESSION['cart_id']); // Lấy cart_id từ session
+
+        // Hiển thị giỏ hàng
+        include 'app/views/cart/view.php';
+    }
+
 
     public function index()
     {

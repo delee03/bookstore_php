@@ -1,4 +1,5 @@
 <?php
+session_start();  // Đặt ở đầu của controller hoặc index.php
 require_once 'app/models/ProductModel.php';
 $url = $_GET['url'] ?? '';
 $url = rtrim($url, '/');
@@ -23,4 +24,3 @@ if (!method_exists($controller, $action)) {
 
 // Gọi action với các tham số còn lại (nếu có)
 call_user_func_array([$controller, $action], array_slice($url, 2));
-?>

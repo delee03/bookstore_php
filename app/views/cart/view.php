@@ -1,11 +1,6 @@
-<?php
-// Giả sử $cartModel đã được khởi tạo
-$cartItems = $cartModel->getCartItems($_SESSION['cart_id']);
-?>
-
 <h1>Giỏ Hàng</h1>
 
-<?php if (count($cartItems) > 0): ?>
+<?php if (!empty($cartItems)): ?>
     <table>
         <thead>
             <tr>
@@ -18,11 +13,14 @@ $cartItems = $cartModel->getCartItems($_SESSION['cart_id']);
         <tbody>
             <?php foreach ($cartItems as $item): ?>
                 <tr>
-                    <td><img src="/webbanhang/uploads/<?php echo $item->image; ?>" alt="<?php echo $item->name; ?>" width="50">
-                        <?php echo $item->name; ?></td>
+                    <td>
+                        <img src="/webbanhang/uploads/<?php echo htmlspecialchars($item->image); ?>"
+                            alt="<?php echo htmlspecialchars($item->name); ?>" width="50">
+                        <?php echo htmlspecialchars($item->name); ?>
+                    </td>
                     <td><?php echo $item->quantity; ?></td>
                     <td><?php echo $item->price; ?> VNĐ</td>
-                    <td><a href="remove_from_cart.php?product_id=<?php echo $item->id; ?>">Xóa</a></td>
+                    <td><a href="/webbanhang/Cart/remove/<?php echo $item->product_id; ?>">Xóa</a></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
